@@ -201,7 +201,7 @@ namespace Library.Models
       cmd.CommandText = @"SELECT books.*
       FROM authors
       JOIN authors_books ON (authors.id = authors_books.author_id)
-      JOIN books ON (book.id = authors_books.book_id)
+      JOIN books ON (books.id = authors_books.book_id)
       WHERE authors.id = @authorId;";
 
       // @"SELECT books.*

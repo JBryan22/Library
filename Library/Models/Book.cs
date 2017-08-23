@@ -221,5 +221,99 @@ namespace Library.Models
       conn.Close();
       return allAuthors;
     }
+
+    public List<Copy> GetCopies()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM copies WHERE book_id = @id;";
+
+      MySqlParameter bookId = new MySqlParameter();
+      bookId.ParameterName = "@id";
+      bookId.Value = _id;
+      cmd.Parameters.Add(bookId);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      List<Copy> allCopies = new List<Copy>{};
+
+      while(rdr.Read())
+      {
+        int id = rdr.GetInt32(0);
+        int bookId = rdr.GetInt32(1);
+        bool available = rdr.GetBoolean(2);
+        Copy newCopy = new Copy(bookId, available, id);
+        allCopies.Add(newCopy);
+      }
+      conn.Close();
+      return allCopies;
+    }
+
+    public List<Copy> GetAvailableCopies()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM copies WHERE book_id = @id AND available = @true;";
+
+      MySqlParameter bookId = new MySqlParameter();
+      bookId.ParameterName = "@id";
+      bookId.Value = _id;
+      cmd.Parameters.Add(bookId);
+
+      MySqlParameter availableStatus = new MySqlParameter();
+      availableStatus.ParameterName = "@true";
+      availableStatus.Value = true;
+      cmd.Parameters.Add(availableStatus);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      List<Copy> allCopies = new List<Copy>{};
+
+      while(rdr.Read())
+      {
+        int id = rdr.GetInt32(0);
+        int bookId = rdr.GetInt32(1);
+        bool available = rdr.GetBoolean(2);
+        Copy newCopy = new Copy(bookId, available, id);
+        allCopies.Add(newCopy);
+      }
+      conn.Close();
+      return allCopies;
+    }
+
+    public List<Copy> GetUnavailableCopies()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM copies WHERE book_id = @id AND available = @false;";
+
+      MySqlParameter bookId = new MySqlParameter();
+      bookId.ParameterName = "@id";
+      bookId.Value = _id;
+      cmd.Parameters.Add(bookId);
+
+      MySqlParameter availableStatus = new MySqlParameter();
+      availableStatus.ParameterName = "@false";
+      availableStatus.Value = false;
+      cmd.Parameters.Add(availableStatus);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      List<Copy> allCopies = new List<Copy>{};
+
+      while(rdr.Read())
+      {
+        int id = rdr.GetInt32(0);
+        int bookId = rdr.GetInt32(1);
+        bool available = rdr.GetBoolean(2);
+        Copy newCopy = new Copy(bookId, available, id);
+        allCopies.Add(newCopy);
+      }
+      conn.Close();
+      return allCopies;
+    }
   }
 }

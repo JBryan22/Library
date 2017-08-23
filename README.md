@@ -28,7 +28,9 @@ _Download the necessary files from my GitHub Page._
 | 10. Librarian can view how many copies of a book are available | search Harry Potter | number of copies is displayed |
 | 11. Librarian can view a patron's history | search patron detail | history of books checked out from library |
 | 12. Librarian can view when a specific book is due for a patron | View patron details | currently checked out books + due dates appears |
-| 13. Librarian can see a list of overdue books | Search overdue books / click on overdue books button | List of all overdue books for all patrons appears | 
+| 13. Librarian can see a list of overdue books | Search overdue books / click on overdue books button | List of all overdue books for all patrons appears |
+
+![](/schema.png)
 
 ## Known Bugs
 
