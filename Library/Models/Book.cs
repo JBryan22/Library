@@ -108,7 +108,16 @@ namespace Library.Models
       conn.Open();
 
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE FROM books WHERE id = @id;";
+      cmd.CommandText = @"DELETE authors FROM books
+      JOIN authors_books ON (books.id = authors_books.book_id)
+      JOIN authors ON (authors_books.author_id = authors.id)
+      WHERE books.id = @id;
+
+      DELETE FROM authors_books WHERE book_id = @id;
+
+      DELETE FROM copies WHERE book_id = @id;
+
+      DELETE FROM books WHERE id = @id;";
 
       MySqlParameter bookId = new MySqlParameter();
       bookId.ParameterName = "@id";
@@ -241,9 +250,9 @@ namespace Library.Models
       while(rdr.Read())
       {
         int id = rdr.GetInt32(0);
-        int bookId = rdr.GetInt32(1);
+        int bookIdParam = rdr.GetInt32(1);
         bool available = rdr.GetBoolean(2);
-        Copy newCopy = new Copy(bookId, available, id);
+        Copy newCopy = new Copy(bookIdParam, available, id);
         allCopies.Add(newCopy);
       }
       conn.Close();
@@ -274,9 +283,9 @@ namespace Library.Models
       while(rdr.Read())
       {
         int id = rdr.GetInt32(0);
-        int bookId = rdr.GetInt32(1);
+        int bookIdParam = rdr.GetInt32(1);
         bool available = rdr.GetBoolean(2);
-        Copy newCopy = new Copy(bookId, available, id);
+        Copy newCopy = new Copy(bookIdParam, available, id);
         allCopies.Add(newCopy);
       }
       conn.Close();
@@ -307,13 +316,44 @@ namespace Library.Models
       while(rdr.Read())
       {
         int id = rdr.GetInt32(0);
-        int bookId = rdr.GetInt32(1);
+        int bookIdParam = rdr.GetInt32(1);
         bool available = rdr.GetBoolean(2);
-        Copy newCopy = new Copy(bookId, available, id);
+        Copy newCopy = new Copy(bookIdParam, available, id);
         allCopies.Add(newCopy);
       }
       conn.Close();
       return allCopies;
+    }
+
+    public void AddCopy(int amount)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+
+      for (int i = 0; i < amount; i++)
+      {
+        cmd.CommandText = @"INSERT INTO copies (book_id, available) VALUES (@bookId, @available);";
+
+        MySqlParameter bookId = new MySqlParameter();
+        bookId.ParameterName = "@bookId";
+        bookId.Value = _id;
+        cmd.Parameters.Add(bookId);
+
+        MySqlParameter availableStatus = new MySqlParameter();
+        availableStatus.ParameterName = "@available";
+        availableStatus.Value = true;
+        cmd.Parameters.Add(availableStatus);
+
+        cmd.ExecuteNonQuery();
+      }
+
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
     }
   }
 }

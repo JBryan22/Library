@@ -1,0 +1,19 @@
+@{
+  Layout = "_Layout";
+}
+
+<body id="patron-form">
+
+  <h1>Add A Patron</h1>
+
+  <div class="container">
+    <form action="/add/patron/success" method="post" class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" name="name" class="form-control">
+
+      <button type="submit" class="btn btn-success">Add Patron</button>
+    </form>
+    <a href="/"><button type="button" class="btn btn-default start">Cancel</button></a>
+  </div>
+
+</body>

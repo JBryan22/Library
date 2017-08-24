@@ -1,0 +1,19 @@
+@{
+  Layout = "_Layout";
+}
+
+<body id="patron-list">
+  <h1>KCLS Patrons</h1>
+
+  <div class="container">
+
+  <ul>
+    @foreach (var patron in Model)
+    {
+      <a href="/patron/details/@patron.GetId()"><li>@patron.GetName()</li></a>
+    }
+  </ul>
+
+  </div>
+
+</body>

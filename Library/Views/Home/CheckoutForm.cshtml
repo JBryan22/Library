@@ -1,0 +1,24 @@
+@{
+  Layout = "_Layout";
+}
+
+<body id="checkout-form">
+
+  <h1>Checkout @Model["book"].GetTitle()</h1>
+
+  <div class="container">
+    <form action='/' method="post">
+      <label for="patron"><h5>Select Patron:</h5></label>
+      <select class="selectpicker" name="patron">
+        @foreach(var patron in @Model["patron"])
+        {
+          <option value="@patron.GetId()">@patron.GetName()</option>
+        }
+      </select>
+      <input type="hidden" value='@Model["copy"].GetId()' name="copy-id">
+      <button type="submit" name="button" class="btn btn-success">Check Out</button>
+    </form>
+    <a href="/"><button type="button" class="btn btn-default start">Cancel</button></a>
+  </div>
+
+</body>

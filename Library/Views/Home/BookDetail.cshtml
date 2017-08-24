@@ -1,0 +1,41 @@
+@{
+  Layout = "_Layout";
+}
+
+<body id="book-detail">
+  <h1>@Model.GetTitle() Details</h1>
+
+  <div class="container">
+
+    <h2>Available Copies: @Model.GetAvailableCopies().Count</h2>
+    <h2>Author(s):</h2>
+
+    <ul>
+      @foreach (var author in Model.GetAuthors())
+      {
+        <li>@author.GetName()</li>
+      }
+    </ul>
+
+    <h3>Add additional author(s):</h3>
+    <form action="/book/details/@Model.GetId()" method="post">
+      <label for="author-name">Author name:</label>
+      <input type="text" name="author-name" class="form-control author-name">
+      <button type="submit" class="btn btn-success add-author">Add author</button>
+    </form>
+
+    <ul>
+      @foreach (var copy in Model.GetAvailableCopies())
+      {
+        <li>@Model.GetTitle() Copy: @copy.GetId()</li>
+        <a href="/checkout/@copy.GetId()/book/@Model.GetId()"><button type="button" name="copyId" class="btn btn-sm btn-default">Checkout</button></a>
+      }
+    </ul>
+
+    <a href='/book/@Model.GetId()/add' class="btn btn-default" >Add Copies</a>
+    <a href='/book/@Model.GetId()/delete' class="btn btn-danger">Delete Book</a>
+    <a href='/catalog/list' class="btn btn-default">Back To Catalog</a>
+
+  </div>
+
+</body>

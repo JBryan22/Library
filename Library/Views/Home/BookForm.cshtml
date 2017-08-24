@@ -1,0 +1,22 @@
+@{
+  Layout = "_Layout";
+}
+
+<body id="book-form">
+
+  <h1>Add A Book</h1>
+
+  <div class="container">
+    <form action="/add/book/success" method="post" class="form-group">
+      <label for="book-title">Book Title</label>
+      <input type="text" name="book-title" class="form-control">
+      <label for="book-author">Author:</label>
+      <input type="text" name="book-author" class="form-control">
+      <label for="book-copies">Copies:</label>
+      <input type="number" name="book-copies" class="form-control">
+      <button type="submit" class="btn btn-success">Add Book</button>
+    </form>
+    <a href="/"><button type="button" class="btn btn-default start">Cancel</button></a>
+  </div>
+
+</body>

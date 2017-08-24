@@ -212,6 +212,37 @@ namespace Library.Models
       conn.Close();
     }
 
+    public void ReturnCopy(Copy newCopy)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"UPDATE copies_patrons SET due = @due;";
+
+      MySqlParameter due = new MySqlParameter();
+      due.ParameterName = "@due";
+      due.Value = null;
+      cmd.Parameters.Add(due);
+
+      cmd.ExecuteNonQuery();
+
+      cmd.CommandText = @"UPDATE copies SET available = @true WHERE id = @newCopyId;";
+
+      MySqlParameter copyAvailable = new MySqlParameter();
+      copyAvailable.ParameterName = "@true";
+      copyAvailable.Value = true;
+      cmd.Parameters.Add(copyAvailable);
+
+      MySqlParameter newCopyId = new MySqlParameter();
+      newCopyId.ParameterName = "@newCopyId";
+      newCopyId.Value = newCopy.GetId();
+      cmd.Parameters.Add(newCopyId);
+
+      cmd.ExecuteNonQuery();
+      conn.Close();
+    }
+
     public List<Copy> GetCopies()
     {
       MySqlConnection conn = DB.Connection();
@@ -244,6 +275,38 @@ namespace Library.Models
       return allCopies;
     }
 
+    public List<Book> GetBooks()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT books.*
+      FROM patrons
+      JOIN copies_patrons ON (patrons.id = copies_patrons.patron_id)
+      JOIN copies ON (copies.id = copies_patrons.copy_id)
+      JOIN books ON (copies.id = books.id)
+      WHERE patrons.id = @patronId;";
+
+      MySqlParameter patronId = new MySqlParameter();
+      patronId.ParameterName = "@patronId";
+      patronId.Value = _id;
+      cmd.Parameters.Add(patronId);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      List<Book> allBooks = new List<Book>{};
+
+      while(rdr.Read())
+      {
+        int id = rdr.GetInt32(0);
+        string title = rdr.GetString(1);
+        Book newBook = new Book(title, id);
+        allBooks.Add(newBook);
+      }
+      conn.Close();
+      return allBooks;
+    }
+
     public List<DateTime> GetDueDate()
     {
       MySqlConnection conn = DB.Connection();
@@ -263,10 +326,10 @@ namespace Library.Models
       while(rdr.Read())
       {
         DateTime dueDate = rdr.GetDateTime(3);
-        allCopies.Add(newCopy);
+        allDueDates.Add(dueDate);
       }
       conn.Close();
-      return allCopies;
+      return allDueDates;
     }
   }
 }

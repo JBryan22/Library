@@ -17,6 +17,7 @@ namespace Library.Tests
     public void Dispose()
     {
       Book.DeleteAll();
+      Copy.DeleteAll();
     }
 
     [TestMethod]
@@ -101,6 +102,22 @@ namespace Library.Tests
       var actual = newBook.GetAuthors();
 
       CollectionAssert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void AddCopy_AddsXNumberOfCopiesToCopyDB_List()
+    {
+      Book newBook = new Book("Harry Potter");
+      newBook.Save();
+
+      newBook.AddCopy(2);
+
+      var result = newBook.GetCopies();
+      var expected = Copy.GetAll();
+      Console.WriteLine(result.Count);
+      Console.WriteLine(expected.Count);
+
+      CollectionAssert.AreEqual(expected, result);
     }
 
   }

@@ -1,0 +1,23 @@
+@{
+  Layout = "_Layout";
+}
+
+<body id="patron-detail">
+  <h1>@Model.GetName() Details</h1>
+
+  <div class="container">
+    <div class="well details">
+      <h4>Name: @Model.GetName()</h4>
+      <ul>
+        @foreach (var )
+      </ul>
+    </div>
+
+    <a href='/checkout/@Model.GetId()' class="btn btn-default">Checkout</a>
+    <a href='/book/@Model.GetId()/add' class="btn btn-default" >Add Copies</a>
+    <a href='/book/@Model.GetId()/delete' class="btn btn-danger">Delete Book</a>
+    <a href='/catalog/list' class="btn btn-default">Back To Catalog</a>
+
+  </div>
+
+</body>

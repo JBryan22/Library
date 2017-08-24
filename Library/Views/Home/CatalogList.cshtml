@@ -1,0 +1,19 @@
+@{
+  Layout = "_Layout";
+}
+
+<body id="catalog-list">
+  <h1>KCLS Catalog</h1>
+
+  <div class="container">
+
+  <ul>
+    @foreach (var book in Model)
+    {
+      <a href="/book/details/@book.GetId()"><li>@book.GetTitle()</li></a>
+    }
+  </ul>
+
+  </div>
+
+</body>
