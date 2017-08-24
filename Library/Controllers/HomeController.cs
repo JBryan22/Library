@@ -87,13 +87,32 @@ namespace Library.Controllers
     {
       return View(Patron.GetAll());
     }
-    [HttpPost("/patron/details/@patron.GetId()")]
+
+    [HttpGet("/patron/details/{id}")]
     public ActionResult PatronDetail(int id)
     {
       Patron foundPatron = Patron.Find(id);
-      foundPatron.Save();
+      List<Copy> patronCopies = foundPatron.GetCopies();
 
-      return View(foundPatron);
+      Dictionary<string, object> model = new Dictionary<string, object>();
+      model.Add("patron", foundPatron);
+      model.Add("copies", patronCopies);
+
+      return View(model);
+    }
+
+
+    [HttpPost("/patron/details/{id}")]
+    public ActionResult PatronDetailPost(int id)
+    {
+      Patron foundPatron = Patron.Find(id);
+      List<Copy> patronCopies = foundPatron.GetCopies();
+
+      Dictionary<string, object> model = new Dictionary<string, object>();
+      model.Add("patron", foundPatron);
+      model.Add("copies", patronCopies);
+
+      return View("PatronDetail", model);
     }
 
     [HttpGet("/checkout/{idCopy}/book/{idBook}")]
@@ -102,11 +121,9 @@ namespace Library.Controllers
       Dictionary<string, object> model = new Dictionary<string, object>();
 
       Copy foundCopy = Copy.Find(idCopy);
-      foundCopy.Save();
       model.Add("copy", foundCopy);
 
       Book foundBook = Book.Find(idBook);
-      foundBook.Save();
       model.Add("book", foundBook);
 
       List<Patron> allPatrons = Patron.GetAll();
@@ -115,9 +132,35 @@ namespace Library.Controllers
       return View(model);
     }
 
+    [HttpPost("/success/checkout")]
+    public ActionResult CheckoutSuccess()
+    {
+      int patronId = int.Parse(Request.Form["patron"]);
 
+      Patron selectedPatron = Patron.Find(patronId);
 
+      Copy selectedCopy = Copy.Find(int.Parse(Request.Form["copy-id"]));
+      selectedPatron.AddCopy(selectedCopy);
 
+      return View(selectedPatron);
+    }
+
+    [HttpGet("/patron/details/{copyId}/return/{patronId}")]
+    public ActionResult PatronDetailReturn(int copyId, int patronId)
+    {
+      Patron selectedPatron = Patron.Find(patronId);
+      Copy selectedCopy = Copy.Find(copyId);
+
+      selectedPatron.ReturnCopy(selectedCopy);
+
+      List<Copy> patronCopies = selectedPatron.GetCopies();
+
+      Dictionary<string, object> model = new Dictionary<string, object>();
+      model.Add("patron", selectedPatron);
+      model.Add("copies", patronCopies);
+
+      return View("PatronDetail", model);
+    }
 
 
   }

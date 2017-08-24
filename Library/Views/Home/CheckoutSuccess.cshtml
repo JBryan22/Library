@@ -1,0 +1,14 @@
+@{
+  Layout = "_Layout";
+}
+
+<h1 class="header">@Model.GetName() was successfully checked out</h1>
+
+
+
+
+
+<div class="container">
+  <a href="/patron/details/@Model.GetId()" class="btn btn-default">View @Model.GetName() Details</a>
+  <a href="/" class="btn btn-default">Go Home</a>
+</div>

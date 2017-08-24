@@ -163,5 +163,52 @@ namespace Library.Models
       conn.Close();
       return foundCopy;
     }
+
+    public DateTime GetDueDate()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT due FROM copies_patrons WHERE copy_id = @id ORDER BY due;";
+
+      MySqlParameter copyId = new MySqlParameter();
+      copyId.ParameterName = "@id";
+      copyId.Value = _id;
+      cmd.Parameters.Add(copyId);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      DateTime dueDate = DateTime.Now;
+      while(rdr.Read())
+      {
+        dueDate = rdr.GetDateTime(0);
+      }
+      conn.Close();
+      return dueDate;
+    }
+
+    public string GetTitle()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT title FROM books where id = @id;";
+
+      MySqlParameter bookId = new MySqlParameter();
+      bookId.ParameterName = "@id";
+      bookId.Value = _bookId;
+      cmd.Parameters.Add(bookId);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      string title = "";
+
+      while(rdr.Read())
+      {
+        title = rdr.GetString(0);
+      }
+      conn.Close();
+      return title;
+    }
   }
 }

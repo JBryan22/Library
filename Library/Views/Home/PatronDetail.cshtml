@@ -3,21 +3,30 @@
 }
 
 <body id="patron-detail">
-  <h1>@Model.GetName() Details</h1>
+  <h1 class="header">@Model["patron"].GetName() Currently Checked Out Books:</h1>
 
   <div class="container">
-    <div class="well details">
-      <h4>Name: @Model.GetName()</h4>
+
       <ul>
-        @foreach (var )
+        @foreach (var copy in Model["copies"])
+        {
+          <div class="well">
+            <li><strong>Title:</strong> @copy.GetTitle()</li>
+            @if (@copy.GetDueDate() == new DateTime(0001, 1, 1))
+            {
+              <p><strong>Due Date:</strong> Returned</p>
+            }
+            else
+            {
+              <p><strong>Due Date:</strong> @copy.GetDueDate()</p>
+              <a href='/patron/details/@copy.GetId()/return/@Model["patron"].GetId()'><button type="button" class="btn btn-success">Return</button></a>
+            }
+          </div>
+        }
       </ul>
-    </div>
 
-    <a href='/checkout/@Model.GetId()' class="btn btn-default">Checkout</a>
-    <a href='/book/@Model.GetId()/add' class="btn btn-default" >Add Copies</a>
-    <a href='/book/@Model.GetId()/delete' class="btn btn-danger">Delete Book</a>
     <a href='/catalog/list' class="btn btn-default">Back To Catalog</a>
-
+    <a href="/" class="btn btn-default">Go Home</a>
   </div>
 
 </body>

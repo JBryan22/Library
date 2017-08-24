@@ -218,12 +218,17 @@ namespace Library.Models
       conn.Open();
 
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"UPDATE copies_patrons SET due = @due;";
+      cmd.CommandText = @"UPDATE copies_patrons SET due = @due WHERE copy_id = @id;";
 
       MySqlParameter due = new MySqlParameter();
       due.ParameterName = "@due";
-      due.Value = null;
+      due.Value = new DateTime(0001, 1, 1);
       cmd.Parameters.Add(due);
+
+      MySqlParameter copyId = new MySqlParameter();
+      copyId.ParameterName = "@id";
+      copyId.Value = newCopy.GetId();
+      cmd.Parameters.Add(copyId);
 
       cmd.ExecuteNonQuery();
 
@@ -307,29 +312,46 @@ namespace Library.Models
       return allBooks;
     }
 
-    public List<DateTime> GetDueDate()
-    {
-      MySqlConnection conn = DB.Connection();
-      conn.Open();
+    // public Dictionary<string, object> GetBooksAndDueDates()
+    // {
+    //   MySqlConnection conn = DB.Connection();
+    //   conn.Open();
+    //
+    //   var cmd = conn.CreateCommand() as MySqlCommand;
+    //   cmd.CommandText = @"SELECT books.*
+    //   FROM patrons
+    //   JOIN copies_patrons ON (patrons.id = copies_patrons.patron_id)
+    //   JOIN copies ON (copies.id = copies_patrons.copy_id)
+    //   JOIN books ON (copies.id = books.id)
+    //   WHERE patrons.id = @patronId
+    //   UNION
+    //   SELECT copies_patrons.due
+    //   FROM patrons WHERE copies_patrons.patron_id = @patronId;";
+    //
+    //   MySqlParameter patronId = new MySqlParameter();
+    //   patronId.ParameterName = "@patronId";
+    //   patronId.Value = _id;
+    //   cmd.Parameters.Add(patronId);
+    //
+    //   var rdr = cmd.ExecuteReader() as MySqlDataReader;
+    //   Dictionary<string, object> allBooksAndDue = new Dictionary<string, object>();
+    //   List<Book> allBooks = new List<Book>();
+    //   List<DateTime> allDues = new List<DateTime>();
+    //
+    //   while(rdr.Read())
+    //   {
+    //     int id = rdr.GetInt32(0);
+    //     string title = rdr.GetString(1);
+    //     Book newBook = new Book(title, id);
+    //     allBooks.Add(newBook);
+    //     DateTime dueDate = rdr.GetDateTime(2);
+    //     allDues.Add(dueDate);
+    //   }
+    //   allBooksAndDue.Add("books", allBooks);
+    //   allBooksAndDue.Add("dueDates", allDues);
+    //   conn.Close();
+    //   return allBooksAndDue;
+    // }
 
-      var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"SELECT due FROM copies_patrons WHERE patron_id = @id;";
-
-      MySqlParameter patronId = new MySqlParameter();
-      patronId.ParameterName = "@id";
-      patronId.Value = _id;
-      cmd.Parameters.Add(patronId);
-
-      var rdr = cmd.ExecuteReader() as MySqlDataReader;
-      List<DateTime> allDueDates = new List<DateTime>{};
-
-      while(rdr.Read())
-      {
-        DateTime dueDate = rdr.GetDateTime(3);
-        allDueDates.Add(dueDate);
-      }
-      conn.Close();
-      return allDueDates;
-    }
   }
 }

@@ -4,10 +4,10 @@
 
 <body id="checkout-form">
 
-  <h1>Checkout @Model["book"].GetTitle()</h1>
+  <h1 class="header">Checkout @Model["book"].GetTitle()</h1>
 
   <div class="container">
-    <form action='/' method="post">
+    <form action='/success/checkout' method="post">
       <label for="patron"><h5>Select Patron:</h5></label>
       <select class="selectpicker" name="patron">
         @foreach(var patron in @Model["patron"])
